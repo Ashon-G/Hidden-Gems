@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "HiddenGem",
+    "slug": "hidden-gem",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to let you capture photos.",
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to tag your photos on the map."
+      }
+    },
+    "android": {
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "package": "com.yourcompany.hiddengem"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
