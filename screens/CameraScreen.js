@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, Button, Image, StyleSheet, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CameraScreen() {
   const [image, setImage] = useState(null);
+  const navigation = useNavigation();
 
   const openCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -19,8 +21,9 @@ export default function CameraScreen() {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      console.log('Photo URI:', result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      setImage(uri);
+      navigation.navigate('Share', { photoUri: uri }); // ✅ navigate to Share screen
     }
   };
 

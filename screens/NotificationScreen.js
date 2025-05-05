@@ -5,32 +5,30 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  Dimensions,
+  TouchableOpacity,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 const notifications = [
-  { type: 'like', user: 'Jane', message: 'liked your photo' },
-  { type: 'comment', user: 'Alex', message: 'commented: Amazing shot!' },
-  { type: 'follow', user: 'Sam', message: 'started following you' },
-  { type: 'like', user: 'Lily', message: 'liked your post' },
+  { type: 'like', user: 'Jane', message: 'liked your photo', time: '2h' },
+  { type: 'comment', user: 'Alex', message: 'commented: Amazing shot!', time: '4h' },
+  { type: 'follow', user: 'Sam', message: 'started following you', time: '1d' },
+  { type: 'message', user: 'Lily', message: 'sent you a message', time: '1d' },
 ];
 
-const getIcon = (type) => {
-  switch (type) {
-    case 'like':
-      return 'heart';
-    case 'comment':
-      return 'chatbubble-ellipses';
-    case 'follow':
-      return 'person-add';
-    default:
-      return 'notifications';
-  }
-};
-
 export default function NotificationsScreen() {
+  const navigation = useNavigation();
+
+  const handlePress = (item) => {
+    if (item.type === 'message') {
+      navigation.navigate('Message', { user: item.user });
+    } else {
+      // Optional: link to profile, post, etc.
+      console.log(`Tapped on ${item.type} from ${item.user}`);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       <FlatList
@@ -38,27 +36,19 @@ export default function NotificationsScreen() {
         keyExtractor={(_, i) => i.toString()}
         contentContainerStyle={styles.list}
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            {/* Left Icon */}
-            <Ionicons
-              name={getIcon(item.type)}
-              size={24}
-              color="#444"
-              style={styles.leftIcon}
-            />
-
-            {/* Profile Picture */}
+          <TouchableOpacity style={styles.card} onPress={() => handlePress(item)}>
             <Image
               source={{ uri: 'https://via.placeholder.com/50' }}
               style={styles.avatar}
             />
-
-            {/* Message */}
             <View style={styles.textBox}>
-              <Text style={styles.username}>{item.user}</Text>
-              <Text style={styles.message}>{item.message}</Text>
+              <Text style={styles.message}>
+                <Text style={styles.username}>{item.user} </Text>
+                {item.message}
+              </Text>
+              <Text style={styles.time}>{item.time} ago</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </SafeAreaView>
@@ -77,18 +67,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 14,
-    paddingHorizontal: 10,
     borderBottomWidth: 1,
     borderColor: '#eee',
-    backgroundColor: '#fff',
-  },
-  leftIcon: {
-    marginRight: 12,
   },
   avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     marginRight: 12,
     backgroundColor: '#ddd',
   },
@@ -100,7 +85,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   message: {
-    fontSize: 14,
-    color: '#555',
+    fontSize: 15,
+    color: '#333',
+  },
+  time: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 4,
   },
 });
