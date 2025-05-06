@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Button, Image, StyleSheet, Text } from 'react-native';
+import { View, Button, Image, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as Location from 'expo-location';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
@@ -9,12 +10,21 @@ export default function CameraScreen() {
   const navigation = useNavigation();
 
   const openCamera = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Camera permission denied');
+    // Request camera permission
+    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraStatus !== 'granted') {
+      Alert.alert('Permission required', 'Camera permission is needed to take a photo.');
       return;
     }
 
+    // Request location permission
+    const { status: locationStatus } = await Location.requestForegroundPermissionsAsync();
+    if (locationStatus !== 'granted') {
+      Alert.alert('Permission required', 'Location permission is needed to tag photos.');
+      return;
+    }
+
+    // Launch camera
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
       quality: 1,
@@ -23,7 +33,20 @@ export default function CameraScreen() {
     if (!result.canceled) {
       const uri = result.assets[0].uri;
       setImage(uri);
-      navigation.navigate('Share', { photoUri: uri }); // ✅ navigate to Share screen
+
+      // Get location
+      const location = await Location.getCurrentPositionAsync({});
+      const timestamp = new Date().toISOString();
+
+      // Navigate to Share screen with metadata
+      navigation.navigate('Share', {
+        photoUri: uri,
+        location: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+        timestamp: timestamp,
+      });
     }
   };
 
