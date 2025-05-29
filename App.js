@@ -1,90 +1,26 @@
-import React from 'react';
-import { Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { theme } from './styles/theme';
-
-// Main tab screens
-import MapScreen from './screens/MapScreen';
-import GridScreen from './screens/GridScreen';
-import CameraScreen from './screens/CameraScreen';
-import NotificationsScreen from './screens/NotificationsScreen';
-import ProfileScreen from './screens/ProfileScreen';
-
-// Stack-only (hidden) screens
-import PostDetailScreen from './screens/PostDetailScreen';
-import MessageScreen from './screens/MessageScreen';
-import ShareScreen from './screens/ShareScreen';
-
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
-
-function MainTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-          if (route.name === 'Map') iconName = 'map';
-          else if (route.name === 'Explore') iconName = 'grid';
-          else if (route.name === 'Camera') iconName = 'diamond';
-          else if (route.name === 'Activity') iconName = 'heart';
-          else if (route.name === 'Profile') iconName = 'person';
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: theme.tabActive,
-        tabBarInactiveTintColor: theme.tabInactive,
-        tabBarStyle: {
-          backgroundColor: theme.background,
-          paddingBottom: 5,
-          height: 60,
-        },
-      })}
-    >
-      <Tab.Screen name="Map" component={MapScreen} />
-      <Tab.Screen name="Explore" component={GridScreen} />
-      <Tab.Screen name="Camera" component={CameraScreen} />
-      <Tab.Screen name="Activity" component={NotificationsScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator>
-  );
-}
+import React, { useEffect, useState } from "react";
+import { Provider } from "react-redux";
+import { AppNavigator } from "./routes/AppNavigator";
+import { useFonts } from "expo-font";
+import store from "./state-management/store";
+import "react-native-gesture-handler";
+import { FontsConfig } from "./middleware";
+import { StatusBar } from 'expo-status-bar';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 export default function App() {
-  console.log('App loaded');
+  const [fontsLoaded] = useFonts(FontsConfig);
 
+  if (!fontsLoaded) {
+    return null;
+  }
+  
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#01C9AF',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-          }}
-        >
-          {/* Main Tabs */}
-          <Stack.Screen
-            name="MainTabs"
-            component={MainTabs}
-            options={{ headerShown: false }}
-          />
-
-          {/* Hidden stack screens */}
-          <Stack.Screen name="PostDetail" component={PostDetailScreen} />
-          <Stack.Screen name="Message" component={MessageScreen} />
-          <Stack.Screen name="Share" component={ShareScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <StatusBar style="dark" hidden  />
+      <AppNavigator />
+    </Provider>
   );
 }

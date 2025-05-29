@@ -1,33 +1,35 @@
 {
   "expo": {
-    "name": "HiddenGem",
-    "slug": "hidden-gem",
+    "name": "Memofy",
+    "slug": "memofy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSCameraUsageDescription": "This app uses the camera to let you capture photos.",
-        "NSLocationWhenInUseUsageDescription": "This app uses your location to tag your photos on the map."
-      }
+      "supportsTablet": true
     },
     "android": {
-      "permissions": [
-        "CAMERA",
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
-      ],
-      "package": "com.yourcompany.hiddengem"
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3c20ccb9-2e02-41a9-a155-f50d3117ac94"
+    },
+    "extra": {}
   }
 }
